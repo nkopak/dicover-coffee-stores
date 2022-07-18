@@ -1,0 +1,123 @@
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true
+  },
+  extends: ['eslint:recommended', 'prettier', 'next/core-web-vitals'],
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module'
+  },
+  rules: {
+    // 'prettier/prettier': 'warn',
+    // "array-bracket-newline": ["warn", { "minItems": 2 }],
+    // "array-element-newline": ["warn", { "minItems": 2 }],
+    // "arrow-body-style": "warn",
+    'block-scoped-var': 'warn',
+    'comma-dangle': ['warn', 'never'],
+    complexity: 'warn',
+    'constructor-super': 'warn',
+    curly: 'warn',
+    'default-case': 'off',
+    'dot-notation': 'warn',
+    'eol-last': 'warn',
+    eqeqeq: 'warn',
+    'guard-for-in': 'warn',
+    indent: ['warn', 2, { SwitchCase: 1 }],
+    'max-classes-per-file': 'off',
+    'max-len': ['off', { code: 140 }],
+    // "newline-per-chained-call": "warn",
+    'new-parens': 'warn',
+    'newline-before-return': 'warn',
+    'no-alert': 'warn',
+    'no-bitwise': 'warn',
+    'no-caller': 'warn',
+    'no-case-declarations': 'off',
+    'no-cond-assign': 'warn',
+    'no-console': 'off',
+    'no-const-assign': 'warn',
+    'no-else-return': 'warn',
+    'no-empty': 'off',
+    'no-empty-functions': 'off',
+    'no-eval': 'warn',
+    'no-extend-native': 'warn',
+    'no-extra-bind': 'warn',
+    'no-fallthrough': 'warn',
+    'no-floating-decimal': 'warn',
+    'no-implicit-globals': 'warn',
+    'no-implied-eval': 'warn',
+    'no-invalid-this': 'off',
+    'no-iterator': 'warn',
+    'no-labels': 'warn',
+    'no-lone-blocks': 'warn',
+    'no-loop-func': 'warn',
+    // "no-magic-numbers": ["warn", {"ignoreArrayIndexes": true}],
+    'no-multi-spaces': 'warn',
+    'no-multi-str': 'warn',
+    'no-multiple-empty-lines': ['warn', { max: 1, maxEOF: 1 }],
+    'no-new': 'warn',
+    'no-new-func': 'warn',
+    'no-new-wrappers': 'warn',
+    'no-octal-escape': 'warn',
+    // "no-param-reassign": "warn",
+    'no-proto': 'warn',
+    'no-return-assign': 'warn',
+    'no-return-await': 'warn',
+    'no-script-url': 'warn',
+    'no-self-compare': 'warn',
+    'no-sequences': 'warn',
+    // 'no-throw-literal': 'warn',
+    'no-trailing-spaces': 'warn',
+    'no-undef-init': 'warn',
+    'no-unsafe-finally': 'warn',
+    'no-unused-expressions': 'warn',
+    'no-unused-vars': 'warn',
+    'no-use-before-define': 'warn',
+    'no-useless-call': 'warn',
+    'no-useless-concat': 'warn',
+    'no-useless-return': 'warn',
+    'no-var': 'warn',
+    'no-void': 'warn',
+    'object-shorthand': 'warn',
+    'one-var': ['warn', 'never'],
+    'padding-line-between-statements': 'warn',
+    'prefer-arrow-callback': 'warn',
+    'prefer-const': 'warn',
+    'quote-props': ['warn', 'as-needed'],
+    quotes: ['warn', 'single', { allowTemplateLiterals: true }],
+    radix: 'warn',
+    'require-atomic-updates': 'off',
+    'require-await': 'warn',
+    semi: ['warn', 'always'],
+    'sort-imports': [
+      'warn',
+      {
+        ignoreCase: true,
+        ignoreDeclarationSort: true,
+        ignoreMemberSort: false
+      }
+    ],
+    'keyword-spacing': [
+      'warn',
+      {
+        overrides: {
+          if: { after: true },
+          for: { after: true },
+          while: { after: true }
+        }
+      }
+    ],
+    'space-before-function-paren': [
+      'warn',
+      {
+        anonymous: 'never',
+        asyncArrow: 'always',
+        named: 'never'
+      }
+    ],
+    'use-isnan': 'warn',
+    'wrap-iife': 'warn',
+    yoda: 'warn'
+  }
+};

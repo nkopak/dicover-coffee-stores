@@ -1,8 +1,62 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
 
-export default function Home() {
+import Banner from '../components/banner/banner';
+import Card from '../components/card/card';
+import { fetchCoffeeStores } from '../lib/coffee-stores';
+import useTrackLocation from '../hooks/useTrackLocation';
+
+import styles from '../styles/Home.module.css';
+import { ACTION_TYPES, StoreContext } from '../store/storeContext';
+
+export async function getStaticProps(context) {
+  const coffeeStores = await fetchCoffeeStores();
+
+  return {
+    props: {
+      coffeeStores
+    }
+  };
+}
+
+export default function Home(props) {
+  const [coffeeStoresError, setCoffeeStoresError] = useState('');
+
+  const {handleTrackLocation, locationErrorMessage, isFindingLocation} = useTrackLocation();
+
+  const { dispatch, state } = useContext(StoreContext);
+  const { coffeeStores, latLong } = state;
+
+  useEffect(()=>{
+    const asyncFunc = async () => {
+      if (latLong){
+        try {
+          const response = await fetch(`/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=30`);
+
+          const coffeeStores = await response.json();
+
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: {
+              coffeeStores
+            }
+          });
+          setCoffeeStoresError('');
+        } catch (err) {
+          console.error({err});
+          setCoffeeStoresError(err.message);
+        }
+      }
+    };
+    asyncFunc();
+  },[latLong]);
+
+  const handleOnBannerBtnClick = () => {
+    handleTrackLocation();
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,58 +66,54 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <Banner
+          buttonText={isFindingLocation ? 'Locating...' : 'View stores nearby'}
+          handleOnClick={handleOnBannerBtnClick}
+        />
+        {locationErrorMessage && <p>Oops! We have a problem: {locationErrorMessage}</p>}
+        {coffeeStoresError && <p>Oops! We have a problem: {coffeeStoresError}</p>}
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <Image
+          src='/static/hero-image.png'
+          alt='hero image'
+          width={700}
+          height={400}
+        />
+        {coffeeStores.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Coffee stores near me</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStores.map((i)=>{
+                return (
+                  <Card
+                    className={styles.card}
+                    name={i.name}
+                    key={i.fsq_id}
+                    imgUrl={i.imgUrl || 'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'}
+                    href={`/coffee-store/${i.id}`}
+                  />
+                );})
+              }
+            </div>
+          </>)}
+        {props.coffeeStores.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Lviv stores</h2>
+            <div className={styles.cardLayout}>
+              {props.coffeeStores.map((i)=>{
+                return (
+                  <Card
+                    className={styles.card}
+                    name={i.name}
+                    key={i.fsq_id}
+                    imgUrl={i.imgUrl || 'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'}
+                    href={`/coffee-store/${i.id}`}
+                  />
+                );})
+              }
+            </div>
+          </>)}
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
-  )
+  );
 }
